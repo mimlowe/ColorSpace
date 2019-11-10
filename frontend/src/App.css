@@ -1,29 +1,6 @@
-.App {
-  text-align: center;
-  margin-left: 100px;
-  margin-right: 100px;
+body {
+  padding-bottom: 100px;
 }
-
-.App-logo {
-  height: 40vmin;
-}
-
-.App-header {
-  background-color: #fafafa;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  /* color: #09d3ac; */
-  color: #aaa;
-}
-
-.App-link {
-  color: #09d3ac;
-}
-
 h1 {
   margin-top: -50px;
   margin-bottom: 100px;
@@ -39,6 +16,32 @@ h1 {
     background: linear-gradient(to right, orange , yellow, green, cyan, blue, violet); /* Standard syntax (must be last) */
 }
 
+.App {
+  text-align: center;
+  margin-left: 100px;
+  margin-right: 100px;
+}
+
+.App-logo {
+  height: 40vmin;
+}
+
+.App-header {
+  background-color: #fafafa;
+  min-height: 40vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  /* color: #09d3ac; */
+  color: #aaa;
+}
+
+.App-link {
+  color: #09d3ac;
+}
+
 .search-bar {
   width: 100%;
   border-radius: 10px;
@@ -50,4 +53,32 @@ h1 {
   padding: 5px 10px 5px 10px;
   /* text-align: center; */
   color: ##222222;
+}
+
+.ResultWrapper {
+  width: 100%;
+  height: 100%;
+}
+
+.Result {
+  width: 98%;
+  margin: 5px 0px 5px 0px;
+  background-color: #eeeeee;
+  text-align: left;
+  padding: 10px 10px 10px 10px;
+}
+
+.Result > h3 {
+  color: #888888;
+}
+
+.Color {
+  float: right;
+}
+
+
+.Result > .domain {
+  font-size: 20px;
+  color: #6a6a6a;
+  font-weight: bolder;
 }
