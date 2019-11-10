@@ -52,6 +52,22 @@ class Search extends React.Component {
     });
   }
   render() {
+
+    const sites = [
+      {
+        domain: 'amazon.com',
+        colors: ["#ff9900", "#232f3e"]
+      },
+      {
+        domain: 'google.com',
+        colors: ["#FFFFFF", "#4285F4", "#DB4437", "#F4B400", "#0F9D58"]
+      },
+      {
+        domain: 'facebook.com',
+        colors: ["#4267B2", "#ffffff"]
+      }
+    ]
+
     return (
       <div className="App">
         <header className="App-header">
@@ -66,12 +82,11 @@ class Search extends React.Component {
           <div id="grad1"></div>
         </header>
         <div className="ResultWrapper">
-          <Result hex='#ff00ff' />
-          <Result />
-          <Result />
-          <Result />
-          <Result />
-          <Result />
+        {
+          sites.map((site, index) => {
+            return  <Result key={index} site={site} />
+          })
+        }
         </div>
       </div>
     );

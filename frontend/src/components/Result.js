@@ -24,9 +24,9 @@ class Result extends Component {
   render() {
     return (
       <div className="Result">
-        <span className="domain">Domain Name</span>
+        <span className="domain">{this.state.site.domain}</span>
         {
-          this.state.colors.map((color, index) => {
+          this.state.site.colors.map((color, index) => {
             return <Color key={index} hex={color} />
           })
         }
