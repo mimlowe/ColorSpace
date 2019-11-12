@@ -13,20 +13,35 @@ from getpass import getpass
 
 app = Flask(__name__)
 
-# Prompts for password instead of entering
-mongo_pass = getpass('Enter mongodb password:\n')
+# Settings
 
-app.config.update(
-    MONGODB_HOST = 'mongodb://cluster0-shard-00-00-aaxvq.mongodb.net:27017,cluster0-shard-00-01-aaxvq.mongodb.net:27017,cluster0-shard-00-02-aaxvq.mongodb.net:27017/?ssl=true&authSource=admin&retryWrites=true&w=majority',
-    MONGODB_PORT = 27017,
-    MONGODB_DB = 'mongorest_test',
-    MONGODB_USERNAME = 'wayne',
-    MONGODB_PASSWORD = mongo_pass
-)
 
-# mongodb+srv://<username>:<password>@cluster0-aaxvq.mongodb.net/test?retryWrites=true&w=majority
-# mongodb://<username>:<password>@cluster0-shard-00-00-aaxvq.mongodb.net:27017,cluster0-shard-00-01-aaxvq.mongodb.net:27017,cluster0-shard-00-02-aaxvq.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority
+# DB_MODE = 'remote'
+DB_MODE = 'local'
 
+# IS_DEBUG=True
+IS_DEBUG=False
+
+if DB_MODE == 'remote':
+    try:
+        with open('db_pass.txt') as f:
+            mongo_pass = f.read()
+    except FileNotFoundError:
+        mongo_pass = getpass('No password file found, enter mongodb password:\n')
+
+    app.config.update(
+        MONGODB_HOST = 'mongodb://cluster0-shard-00-00-aaxvq.mongodb.net:27017,cluster0-shard-00-01-aaxvq.mongodb.net:27017,cluster0-shard-00-02-aaxvq.mongodb.net:27017/?ssl=true&authSource=admin&retryWrites=true&w=majority',
+        MONGODB_PORT = 27017,
+        MONGODB_DB = 'mongorest_test',
+        MONGODB_USERNAME = 'wayne',
+        MONGODB_PASSWORD = mongo_pass
+    )
+elif DB_MODE == 'local':
+    app.config.update(
+        MONGODB_HOST = 'localhost',
+        MONGODB_PORT = 27017,
+        MONGODB_DB = 'mongorest_example_app',
+    )
 
 db = MongoEngine(app)
 api = MongoRest(app)
@@ -62,6 +77,9 @@ class ColorGroupResource(Resource):
 
 class ColorResource(Resource):
     document = Color
+    related_resources = {
+        'colorgroup':ColorGroupResource
+    }
     filters = {
         'hexval': [ops.Exact, ops.Startswith]
     }
@@ -101,6 +119,8 @@ class ColorGroupView(ResourceView):
 '''
 curl -H "Content-Type: application/json" -X POST -d '{"domain":"aa.test.com","colors":["5dc8436d4d04f2d62c3cd837","5dc8415800b62bc7cad59b7f"], "sitegetter":{"src":"style.css","options":[""]}}' http://127.0.0.1:5000/sites/
 '''
+
+
 
 def init_data():
     dark = ColorGroup(primary='dark',grayscale=True)
@@ -154,5 +174,5 @@ def color_import():
 
 if __name__ == "__main__":
 
-    app.run(debug=True)
+    app.run(debug=IS_DEBUG)
     pass
