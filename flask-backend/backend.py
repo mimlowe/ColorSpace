@@ -16,8 +16,8 @@ app = Flask(__name__)
 # Settings
 
 
-# DB_MODE = 'remote'
-DB_MODE = 'local'
+DB_MODE = 'remote'
+# DB_MODE = 'local'
 
 IS_DEBUG=True
 # IS_DEBUG=False
@@ -29,10 +29,11 @@ if DB_MODE == 'remote':
     except FileNotFoundError:
         mongo_pass = getpass('No password file found, enter mongodb password:\n')
 
+    DB_NAME = 'colortest'
     app.config.update(
-        MONGODB_HOST = 'mongodb://cluster0-shard-00-00-aaxvq.mongodb.net:27017,cluster0-shard-00-01-aaxvq.mongodb.net:27017,cluster0-shard-00-02-aaxvq.mongodb.net:27017/?ssl=true&authSource=admin&retryWrites=true&w=majority',
-        MONGODB_PORT = 27017,
-        MONGODB_DB = 'mongorest_test',
+        MONGODB_HOST = 'mongodb://cluster0-shard-00-00-aaxvq.mongodb.net:27017,cluster0-shard-00-01-aaxvq.mongodb.net:27017,cluster0-shard-00-02-aaxvq.mongodb.net:27017/{}?ssl=true&authSource=admin&retryWrites=true&w=majority'.format(DB_NAME),
+        # MONGODB_PORT = 27017,
+        # MONGODB_DB = 'colorspace',
         MONGODB_USERNAME = 'wayne',
         MONGODB_PASSWORD = mongo_pass
     )
