@@ -12,14 +12,13 @@ class Color extends Component {
       ...props
     }
   }
-  
   /**
    * React Method. Called when component state / DOM changes
    * @return { HTML / JSX }
    */
   render() {
     const style = {
-      backgroundColor: this.props.hex,
+      backgroundColor: "#"+this.props.hex,
       width: '50px',
       height: '30px',
       display: 'inline-block',

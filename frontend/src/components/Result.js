@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import Color from './Color'
 import '../App.css'
 
-
 class Result extends Component {
   /**
    * React.Component Initialization Method
@@ -11,6 +10,7 @@ class Result extends Component {
   constructor(props) {
     super(props)
     this.state = {...props}
+    console.log(props)
   }
 
   /**
@@ -20,10 +20,6 @@ class Result extends Component {
    */
   componentWillMount = () => {
     console.log("Results Will Mount")
-    // This is where we query more info about the site
-    // this.setState({
-    //   colors: ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#00ffff", "#ff00ff", "#ffffff", "#000000"]
-    // })
   }
   /**
    * React.Component Lifecycle Method
@@ -33,7 +29,7 @@ class Result extends Component {
   componentDidMount = () => {
     console.log("Results Mounted")
   }
-  
+
   /**
    * React Method. Called when component state / DOM changes
    * @return { HTML / JSX }

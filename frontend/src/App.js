@@ -5,6 +5,10 @@ import logo from './logo.svg';
 import './App.css';
 
 class App extends React.Component {
+  /**
+   * React.Component Initialization Method
+   * @param {Array} props Passed from parent component
+   */
   constructor(props) {
     super(props);
   }

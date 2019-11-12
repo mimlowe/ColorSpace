@@ -1,12 +1,19 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {BrowserRouter} from 'react-router-dom';
+import axios from 'axios'
+import API from '../API'
 import Result from './Result'
 import '../App.css';
 
-class Search extends React.Component {
+class Search extends Component {
+  /**
+   * React.Component Initialization Method
+   * @param {Array} props Passed from parent component
+   */
   constructor(props) {
     super(props);
-    this.state = {value: '', searchMode: '/group/'};
+    this.isWebsite = this.isWebsite.bind(this)
+    this.state = {value: '', searchMode: '/group/', data: []};
     this.handleChange = this.handleChange.bind(this);
     this.keyPress = this.keyPress.bind(this);
   }
@@ -17,12 +24,35 @@ class Search extends React.Component {
    * @return {void }
    */
   keyPress(e){
-     if(e.keyCode == 13){
-        console.log('value', e.target.value);
-        let searchTerm = this.state.value
-        let searchMode = this.state.searchMode
-        console.log(searchMode)
-        // ========= HTTP REQUEST HERE ========== //
+    let mode  = this.state.searchMode
+    let query = this.state.query
+    let url = API.baseURL
+    let params = "/?"
+    if(e.keyCode == 13){
+      switch(mode) {
+        case 'hex':
+          url += API.routes.colors
+          params += "hexval=" + query
+          break;
+        case 'site':
+          url += API.routes.sites
+          params += "domain__startswith=" + query
+          break
+        default:
+          break;
+      }
+      // ========= HTTP REQUEST HERE ========== //
+      axios.get(url+params)
+      .then((response) => {
+        let data = response.data.data
+        //console.log(data)
+        this.setState({
+          data: data
+        })
+        //console.log(response);
+      }, (error) => {
+        console.log(error);
+      });
      }
   }
   /**
@@ -35,11 +65,12 @@ class Search extends React.Component {
   handleChange(e) {
     let searchTerm = e.target.value
     let charArray = searchTerm.split("")
-
+    let query = ""
     let mode = ""
     switch(charArray[0]) {
       case "#":
         mode = "hex"
+        query = searchTerm.substr(1);
         break;
       case "r":
         // Need to further classify this case by checking
@@ -50,34 +81,41 @@ class Search extends React.Component {
           break
         }
       default:
-        mode = "group"
+        if (this.isWebsite(searchTerm)) {
+          mode = "site"
+          query = searchTerm
+        }
+        else mode = "group"
         break;
     }
     this.setState({
       value: e.target.value,
-      searchMode: mode
+      searchMode: mode,
+      query: query
     });
+  }
+
+
+  isWebsite(searchTerm) {
+    let a = searchTerm.includes(".")
+    let b = searchTerm.includes("://")
+    if (a || b) return true
+    else return false
   }
   /**
    * React Method. Called when component state / DOM changes
    * @return { HTML / JSX }
    */
   render() {
-    const sites = [
-      {
-        domain: 'amazon.com',
-        colors: ["#ff9900", "#232f3e"]
-      },
-      {
-        domain: 'google.com',
-        colors: ["#FFFFFF", "#4285F4", "#DB4437", "#F4B400", "#0F9D58"]
-      },
-      {
-        domain: 'facebook.com',
-        colors: ["#4267B2", "#ffffff"]
-      }
-    ]
 
+     //let sites = [{domain:"", colors:[]}]
+    let sites = this.state.data.map((data, key) => {
+      let c = data.colors.map((val, key) => {
+        return val.hexval
+      })
+      return {domain: data.domain, colors: c}
+    })
+    console.log(sites)
     return (
       <div className="App">
         <header className="App-header">
@@ -87,7 +125,7 @@ class Search extends React.Component {
             className="search-bar"
             onKeyDown={this.keyPress}
             onChange={this.handleChange}
-            placeholder="#fafafa, rgb(250, 250, 250), light"
+            placeholder="#fafafa, rgb(250, 250, 250), amazon.com"
           />
           <div id="grad1"></div>
         </header>
