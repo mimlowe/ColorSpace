@@ -19,8 +19,8 @@ app = Flask(__name__)
 # DB_MODE = 'remote'
 DB_MODE = 'local'
 
-# IS_DEBUG=True
-IS_DEBUG=False
+IS_DEBUG=True
+# IS_DEBUG=False
 
 if DB_MODE == 'remote':
     try:
@@ -50,7 +50,6 @@ class ColorGroup(db.Document):
     primary = db.StringField(max_length=128)
     secondary = db.StringField(max_length=128)
     grayscale = db.BooleanField()
-    Range = db.ListField(db.IntField())
 
 class SiteGetter(db.EmbeddedDocument):
     src = db.StringField(max_length=128)
@@ -61,9 +60,8 @@ class SiteGetterResource(Resource):
 
 class Color(db.Document):
     hexval = db.StringField(max_length=8, required=True) #0x000000
-    rgb = db.ListField(db.StringField(max_length=3), required=True)
+    rgb = db.ListField(db.IntField(min_value=0,max_value=255), required=True)
     colorgroup = db.ReferenceField(ColorGroup)
-    # pass
 
 
 class Site(db.Document):
@@ -81,7 +79,8 @@ class ColorResource(Resource):
         'colorgroup':ColorGroupResource
     }
     filters = {
-        'hexval': [ops.Exact, ops.Startswith]
+        'hexval': [ops.IExact],
+        'rgb':[ops.IContains]
     }
     # rename_fields = {
     #     'hexval':'hex'
@@ -95,7 +94,7 @@ class SiteResource(Resource):
         'colors':ColorResource
     }
     filters = {
-        'domain': [ops.Exact, ops.Startswith],
+        'domain': [ops.IExact, ops.IContains, ops.IStartswith],
         # Needs to be queried with the document ID
         'colors': [ops.Exact]
     }
@@ -119,58 +118,6 @@ class ColorGroupView(ResourceView):
 '''
 curl -H "Content-Type: application/json" -X POST -d '{"domain":"aa.test.com","colors":["5dc8436d4d04f2d62c3cd837","5dc8415800b62bc7cad59b7f"], "sitegetter":{"src":"style.css","options":[""]}}' http://127.0.0.1:5000/sites/
 '''
-
-
-
-def init_data():
-    dark = ColorGroup(primary='dark',grayscale=True)
-    dark.save()
-    print('dark ID {}'.format(str(dark.id)))
-    light = ColorGroup(primary='light',grayscale=True)
-    light.save()
-    print('light ID {}'.format(str(light.id)))
-    black = Color(hexval='000000',rgb=['0','0','0'],colorgroup=dark)
-    black.save()
-    print('black ID {}'.format(str(black.id)))
-    white = Color(hexval='FFFFFF',rgb=['255','255','255'],colorgroup=light)
-    white.save()
-    print('white ID {}'.format(str(white.id)))
-    example = Site(domain='www.example.com', sitegetter={'src':'style.css','options':['']}, colors=[white,black])
-    example.save()
-    print('example site ID {}'.format(str(example.id)))
-
-    return dark, light, black, white, example
-
-def delete_data(documents):
-
-    for item in documents:
-        item.delete()
-
-def color_import():
-
-    with open('colors.json') as f:
-        colors = json.loads(f.read())
-    
-    for color_in in colors:
-        pass
-        # Search for color group
-        # If color group DNE, create with name
-        # Include logic to assess whether the color is light, dark, greyscale
-        # Create color and (optionally) assign to color group
-        
-        # 
-        r = color_in['rgb']['r']
-        g = color_in['rgb']['g']
-        b = color_in['rgb']['b']
-        rgb = [r,g,b]
-
-        # if int(r) > 128 and int(g) > 128 and int(b) > 128:
-        #      color_group
-        # color_group = ColorGroup()
-        color = Color(hexval=color_in['hexstring'[1:7]],
-                      rgb=rgb,
-                      )
-        color.save()
 
 if __name__ == "__main__":
 
