@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 from flask import Flask
 from flask_mongoengine import MongoEngine
@@ -51,6 +52,11 @@ class ColorGroup(db.Document):
     primary = db.StringField(max_length=128)
     secondary = db.StringField(max_length=128)
     grayscale = db.BooleanField()
+    updated_at = DateTimeField(default=datetime.now())
+
+    @classmethod
+    def pre_save(cls, sender, document, **kwargs):
+        document.updated_at = datetime.datetime.now()
 
 class SiteGetter(db.EmbeddedDocument):
     src = db.StringField(max_length=128)
@@ -61,15 +67,24 @@ class SiteGetterResource(Resource):
 
 class Color(db.Document):
     hexval = db.StringField(max_length=8, required=True) #0x000000
-    rgb = db.ListField(db.IntField(min_value=0,max_value=255), required=True)
+    rgb = db.ListField(db.IntField(max_value=255), required=True)
     colorgroup = db.ReferenceField(ColorGroup)
+    updated_at = DateTimeField(default=datetime.now())
 
+    @classmethod
+    def pre_save(cls, sender, document, **kwargs):
+        document.updated_at = datetime.datetime.now()
 
 class Site(db.Document):
     domain = db.StringField(unique=True, required=True)
     sitegetter = db.EmbeddedDocumentField(SiteGetter)
     colors = db.ListField(db.ReferenceField(Color)) # TODO: Does this need to be db.Ref?
     color = db.ReferenceField(Color)
+    updated_at = DateTimeField(default=datetime.now())
+
+    @classmethod
+    def pre_save(cls, sender, document, **kwargs):
+        document.updated_at = datetime.datetime.now()
 
 class ColorGroupResource(Resource):
     document = ColorGroup
