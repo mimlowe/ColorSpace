@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Color from './Color'
+import {default as ColorObj} from 'color'
 import '../App.css'
 
 class Result extends Component {
@@ -37,12 +38,16 @@ class Result extends Component {
   render() {
     return (
       <div className="Result">
-        <span className="domain">{this.state.site.domain}</span>
+        <span className="domain">
+          <a href={this.state.site.domain}>{this.state.site.domain}</a>
+        </span>
+        <div className="colorList">
         {
           this.state.site.colors.map((color, index) => {
             return <Color key={index} hex={color} />
           })
         }
+        </div>
       </div>
     )
   }

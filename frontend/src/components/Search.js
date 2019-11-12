@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {BrowserRouter} from 'react-router-dom';
+import {default as ColorObj} from 'color'
 import axios from 'axios'
 import API from '../API'
 import Result from './Result'
@@ -30,13 +31,28 @@ class Search extends Component {
     let params = "?"
     if(e.keyCode == 13){
       switch(mode) {
+        case 'add':
+          url +=  API.routes.colors
+          let colorObj = ColorObj("#"+query)
+          axios.post(url+"/", {
+            "hexval": query,
+            "rgb": colorObj.rgb().array()
+          })
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+          break;
         case 'hex':
           url += API.routes.colors
           params += "hexval__iexact=" + query
           axios.get(url+params)
           .then((response) => {
             let docid = response.data.data[0].id
-            let url2 = API.baseURL + API.routes.sites + "??__contains="
+            let url2 = API.baseURL + API.routes.sites + "/?colors__contains="
+            console.log(url2+docid)
             // Secondary Query
             // ==========================================
                   axios.get(url2+docid)
@@ -56,7 +72,7 @@ class Search extends Component {
           break;
         case 'site':
           url += API.routes.sites
-          params += "domain__contains=" + query
+          params += "domain__icontains=" + query
           axios.get(url+params)
           .then((response) => {
             let data = response.data.data
@@ -93,9 +109,13 @@ class Search extends Component {
     let query = ""
     let mode = ""
     switch(charArray[0]) {
+      case "+":
+        mode = "add"
+        query = searchTerm.substr(1)
+        break;
       case "#":
         mode = "hex"
-        query = searchTerm.substr(1);
+        query = searchTerm.substr(1)
         break;
       case "r":
         // Need to further classify this case by checking
@@ -151,7 +171,7 @@ class Search extends Component {
             className="search-bar"
             onKeyDown={this.keyPress}
             onChange={this.handleChange}
-            placeholder="#fafafa, rgb(250, 250, 250), amazon.com"
+            placeholder="#fafafa, amazon.com"
           />
           <div id="grad1"></div>
 
