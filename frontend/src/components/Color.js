@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import {default as ColorObj} from 'color'
 import '../App.css'
 
 class Color extends Component {
@@ -19,12 +20,26 @@ class Color extends Component {
   render() {
     const style = {
       backgroundColor: "#"+this.props.hex,
-      width: '50px',
-      height: '30px',
+      width: '100px',
+      height: '100px',
+      padding: '10px',
+      borderRadius: '10px',
+      marginLeft: '5px',
       display: 'inline-block',
     }
+    let hexString = "#"+this.props.hex
+    let c = ColorObj(hexString)
+    let lum = c.luminosity()
+    let textColor = (lum > 0.5) ? "#000000" : "#ffffff"
+
+    const colorLabel = {
+      color: textColor
+    }
+
     return (
-      <div className="Color" style={style}></div>
+      <div className="Color" style={style}>
+        <span className="colorLabel" style={colorLabel}>{"#"+this.props.hex}</span>
+      </div>
     )
   }
 }
