@@ -27,32 +27,50 @@ class Search extends Component {
     let mode  = this.state.searchMode
     let query = this.state.query
     let url = API.baseURL
-    let params = "/?"
+    let params = "?"
     if(e.keyCode == 13){
       switch(mode) {
         case 'hex':
           url += API.routes.colors
-          params += "hexval=" + query
+          params += "hexval__iexact=" + query
+          axios.get(url+params)
+          .then((response) => {
+            let docid = response.data.data[0].id
+            let url2 = API.baseURL + API.routes.sites + "??__contains="
+            // Secondary Query
+            // ==========================================
+                  axios.get(url2+docid)
+                  .then((response) => {
+                    let data = response.data.data
+                    this.setState({
+                      data: data
+                    })
+                    //console.log(response);
+                  }, (error) => {
+                    console.log(error);
+                  });
+            // ==========================================
+          }, (error) => {
+            console.log(error);
+          });
           break;
         case 'site':
           url += API.routes.sites
-          params += "domain__startswith=" + query
+          params += "domain__contains=" + query
+          axios.get(url+params)
+          .then((response) => {
+            let data = response.data.data
+            this.setState({
+              data: data
+            })
+            //console.log(response);
+          }, (error) => {
+            console.log(error);
+          });
           break
         default:
           break;
       }
-      // ========= HTTP REQUEST HERE ========== //
-      axios.get(url+params)
-      .then((response) => {
-        let data = response.data.data
-        //console.log(data)
-        this.setState({
-          data: data
-        })
-        //console.log(response);
-      }, (error) => {
-        console.log(error);
-      });
      }
   }
   /**
