@@ -7,7 +7,7 @@ import './App.css';
 class Main extends Component {
   render() {
     return (
-      <div>
+      <div className="App">
         <Route exact path = "/" component = {Search} />
         <Route path = "/search" component = {Search} />
       </div>

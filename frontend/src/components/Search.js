@@ -13,7 +13,7 @@ class Search extends Component {
   constructor(props) {
     super(props);
     this.isWebsite = this.isWebsite.bind(this)
-    this.state = {value: '', searchMode: '/group/', data: []};
+    this.state = {value: '', searchMode: '/group/', data: [], clearResults: false};
     this.handleChange = this.handleChange.bind(this);
     this.keyPress = this.keyPress.bind(this);
   }
@@ -82,6 +82,13 @@ class Search extends Component {
    */
   handleChange(e) {
     let searchTerm = e.target.value
+    let clearResults = false
+    if (searchTerm === "") {
+      clearResults = true
+      this.setState({
+        data: []
+      });
+    }
     let charArray = searchTerm.split("")
     let query = ""
     let mode = ""
@@ -109,6 +116,7 @@ class Search extends Component {
     this.setState({
       value: e.target.value,
       searchMode: mode,
+      clearResults: clearResults,
       query: query
     });
   }
@@ -136,7 +144,7 @@ class Search extends Component {
     console.log(sites)
     return (
       <div className="App">
-        <header className="App-header">
+
           <h1>_ColorSpace</h1>
           <input
             type="text"
@@ -146,7 +154,7 @@ class Search extends Component {
             placeholder="#fafafa, rgb(250, 250, 250), amazon.com"
           />
           <div id="grad1"></div>
-        </header>
+
         <div className="ResultWrapper">
         {
           sites.map((site, index) => {

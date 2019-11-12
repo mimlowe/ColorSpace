@@ -15,8 +15,7 @@ app = Flask(__name__)
 
 # Settings
 
-
-# DB_MODE = 'remote'
+#DB_MODE = 'remote'
 DB_MODE = 'local'
 
 IS_DEBUG=True
@@ -33,7 +32,7 @@ if DB_MODE == 'remote':
         MONGODB_HOST = 'mongodb://cluster0-shard-00-00-aaxvq.mongodb.net:27017,cluster0-shard-00-01-aaxvq.mongodb.net:27017,cluster0-shard-00-02-aaxvq.mongodb.net:27017/?ssl=true&authSource=admin&retryWrites=true&w=majority',
         MONGODB_PORT = 27017,
         MONGODB_DB = 'mongorest_test',
-        MONGODB_USERNAME = 'wayne',
+        MONGODB_USERNAME = 'michael',
         MONGODB_PASSWORD = mongo_pass
     )
 elif DB_MODE == 'local':
