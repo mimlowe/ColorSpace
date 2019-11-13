@@ -15,8 +15,7 @@ from getpass import getpass
 app = Flask(__name__)
 
 # Settings
-
-
+DB_NAME_REMOTE = 'colorspace'
 DB_MODE = 'remote'
 # DB_MODE = 'local'
 
@@ -30,12 +29,10 @@ if DB_MODE == 'remote':
     except FileNotFoundError:
         mongo_pass = getpass('No password file found, enter mongodb password:\n')
 
-    DB_NAME = 'colortest'
+
     app.config.update(
-        MONGODB_HOST = 'mongodb://cluster0-shard-00-00-aaxvq.mongodb.net:27017,cluster0-shard-00-01-aaxvq.mongodb.net:27017,cluster0-shard-00-02-aaxvq.mongodb.net:27017/{}?ssl=true&authSource=admin&retryWrites=true&w=majority'.format(DB_NAME),
-        # MONGODB_PORT = 27017,
-        # MONGODB_DB = 'colorspace',
-        MONGODB_USERNAME = 'wayne',
+        MONGODB_HOST = 'mongodb://cluster0-shard-00-00-aaxvq.mongodb.net:27017,cluster0-shard-00-01-aaxvq.mongodb.net:27017,cluster0-shard-00-02-aaxvq.mongodb.net:27017/%s?ssl=true&authSource=admin&retryWrites=true&w=majority' % DB_NAME_REMOTE,
+        MONGODB_USERNAME = 'dbuser',
         MONGODB_PASSWORD = mongo_pass
     )
 elif DB_MODE == 'local':
@@ -115,6 +112,10 @@ class SiteResource(Resource):
         'colors': [ops.Exact]
     }
 
+class Poller(db.Document):
+    device_id=db.StringField(required=True)
+    secretkey=db.StringField(required=True)
+    apikey=db.StringField(required=True)
 
 @api.register(name='sites', url='/sites/')
 class SiteView(ResourceView):
