@@ -9,7 +9,8 @@ from flask_mongorest.resources import Resource
 from flask_mongorest import operators as ops
 from flask_mongorest import methods
 from mongoengine.fields import *
-from mongoengine.fields import BooleanField, StringField, ListField, IntField
+from mongoengine.fields import ReferenceField, BooleanField, StringField, ListField
+from mongoengine.fields import IntField, LazyReferenceField
 from getpass import getpass
 
 app = Flask(__name__)
@@ -86,6 +87,10 @@ class Site(db.Document):
 class ColorGroupResource(Resource):
     document = ColorGroup
 
+    filters = {
+        'primary': [ops.Exact, ops.IContains]
+    }
+
 class ColorResource(Resource):
     document = Color
     related_resources = {
@@ -95,6 +100,8 @@ class ColorResource(Resource):
         'hexval': [ops.IExact],
         'rgb':[ops.IContains]
     }
+    # TODO: Look at resources.py for other vars, child resources?
+    # save_related_resources = ['colorgroup']
     # rename_fields = {
     #     'hexval':'hex'
     # }
@@ -109,8 +116,9 @@ class SiteResource(Resource):
     filters = {
         'domain': [ops.IExact, ops.IContains, ops.IStartswith],
         # Needs to be queried with the document ID
-        'colors': [ops.Exact]
+        'colors': [ops.IContains, ops.Contains]
     }
+    save_related_resources = ['colors']
 
 class Poller(db.Document):
     device_id=db.StringField(required=True)
