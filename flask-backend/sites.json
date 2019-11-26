@@ -1,0 +1,48 @@
+{
+  "domain": "http://www.google.com",
+  "colors" :[
+    "5dcb3aa732d1d7af9f031312",
+    "5dcb3aca32d1d7af9f031313",
+    "5dcb3ad232d1d7af9f031314",
+    "5dcb3ada32d1d7af9f031315"
+  ]
+},
+{
+  "domain":"http://www.facebook.com",
+  "colors":[
+    "5dcb3faa32d1d7af9f031316",
+    "5dcb36cee370fcc82ae7205c"
+    ]
+},
+{
+  "domain":"http://www.hulu.com",
+  "colors" : [
+    "5dcb414732d1d7af9f031318",
+    "5dcb413732d1d7af9f031317"
+    ]
+},
+{
+  "domain":"http://www.microsoft.com",
+  "colors":[
+    "5dcb45810943f59cb57b0277",
+    "5dcb458b0943f59cb57b0278",
+    "5dcb45950943f59cb57b0279",
+    "5dcb459d0943f59cb57b027a",
+    "5dcb45a40943f59cb57b027b"
+  ]
+},
+{
+  "domain":"http://www.sjsu.edu",
+  "colors": [
+    "5dcb46fe0943f59cb57b027c",
+    "5dcb47200943f59cb57b027d",
+    "5dcb473c0943f59cb57b027e"
+  ]
+},
+{
+  "domain":"http://www.amazon.com",
+  "colors"[
+    "5dcb48fe0943f59cb57b0280",
+    "5dcb495a0943f59cb57b0281"
+  ]
+}

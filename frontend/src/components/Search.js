@@ -84,6 +84,32 @@ class Search extends Component {
             console.log(error);
           });
           break
+        case 'group':
+      //  console.log(this.state.searchMode)
+        url += API.routes.colorgroups
+        params += "?primary__icontains=" + query
+        axios.get(url+params)
+        .then((response) => {
+          let docid = response.data.data
+          //let url2 = API.baseURL + API.routes.sites + "/?colors__contains="
+          console.log(docid)
+          // Secondary Query
+          // ==========================================
+                // axios.get(url2+docid)
+                // .then((response) => {
+                //   let data = response.data.data
+                //   this.setState({
+                //     data: data
+                //   })
+                //   //console.log(response);
+                // }, (error) => {
+                //   console.log(error);
+                // });
+          // ==========================================
+        }, (error) => {
+          console.log(error);
+        });
+        break;
         default:
           break;
       }
@@ -126,11 +152,10 @@ class Search extends Component {
           break
         }
       default:
-        if (this.isWebsite(searchTerm)) {
+        if (this.isWebsite(searchTerm))
           mode = "site"
-          query = searchTerm
-        }
         else mode = "group"
+        query = searchTerm
         break;
     }
     this.setState({
