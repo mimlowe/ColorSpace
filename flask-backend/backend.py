@@ -99,7 +99,7 @@ class ColorResource(Resource):
     filters = {
         'hexval': [ops.IExact],
         'rgb':[ops.IContains],
-        'colorgroup':[ops.Icontains, ops.In]
+        'colorgroup':[ops.IContains, ops.In]
     }
     # TODO: Look at resources.py for other vars, child resources?
     # save_related_resources = ['colorgroup']
