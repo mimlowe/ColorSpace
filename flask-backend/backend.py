@@ -98,7 +98,8 @@ class ColorResource(Resource):
     }
     filters = {
         'hexval': [ops.IExact],
-        'rgb':[ops.IContains]
+        'rgb':[ops.IContains],
+        'colorgroup':[ops.Icontains, ops.In]
     }
     # TODO: Look at resources.py for other vars, child resources?
     # save_related_resources = ['colorgroup']
@@ -116,7 +117,7 @@ class SiteResource(Resource):
     filters = {
         'domain': [ops.IExact, ops.IContains, ops.IStartswith],
         # Needs to be queried with the document ID
-        'colors': [ops.IContains, ops.Contains]
+        'colors': [ops.IContains, ops.Contains, ops.In]
     }
     save_related_resources = ['colors']
 
