@@ -84,6 +84,18 @@ class Site(db.Document):
     def pre_save(cls, sender, document, **kwargs):
         document.updated_at = datetime.datetime.now()
 
+# Class for polling new sites
+class NewSite(db.Document):
+    domain = db.StringField(unique=True, required=True)
+    updated_at = DateTimeField(default=datetime.now())
+
+    @classmethod
+    def pre_save(cls, sender, document, **kwargs):
+        document.updated_at = datetime.datetime.now()
+
+class NewSiteResource(Resource):
+    document = NewSite
+
 class ColorGroupResource(Resource):
     document = ColorGroup
 
@@ -125,6 +137,11 @@ class Poller(db.Document):
     device_id=db.StringField(required=True)
     secretkey=db.StringField(required=True)
     apikey=db.StringField(required=True)
+
+@api.register(name='newsites', url='/newsites/')
+class NewSiteView(ResourceView):
+    resource = NewSiteResource
+    methods = [methods.Create, methods.Update, methods.Fetch, methods.List, methods.Delete]
 
 @api.register(name='sites', url='/sites/')
 class SiteView(ResourceView):
