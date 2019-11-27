@@ -76,10 +76,22 @@ class Search extends Component {
           axios.get(url+params)
           .then((response) => {
             let data = response.data.data
+            if (data == null || data == [] || data === undefined) {
+              // ======================================
+              //         SELENIUM POLLER
+              // ======================================
+              /*
+
+                     Logic to trigger Poller goes
+
+                              H E R E
+
+              */
+              // ======================================
+            }
             this.setState({
               data: data
             })
-            //console.log(response);
           }, (error) => {
             console.log(error);
           });
@@ -87,24 +99,39 @@ class Search extends Component {
         case 'group':
       //  console.log(this.state.searchMode)
         url += API.routes.colorgroups
-        params += "?primary__icontains=" + query
+        params += "primary__icontains=" + query
+        // ColorGroup ID Query
         axios.get(url+params)
         .then((response) => {
-          let docid = response.data.data
-          //let url2 = API.baseURL + API.routes.sites + "/?colors__contains="
-          console.log(docid)
-          // Secondary Query
+          let docs = response.data.data
+          let groupIds = this.getFields(docs, "id");
+          let url2 = API.baseURL + API.routes.colors + "/?colorgroup__in="
+
+          console.log("GROUP IDs: ", groupIds)
+          console.log(url2)
+          // Color ID Query
           // ==========================================
-                // axios.get(url2+docid)
-                // .then((response) => {
-                //   let data = response.data.data
-                //   this.setState({
-                //     data: data
-                //   })
-                //   //console.log(response);
-                // }, (error) => {
-                //   console.log(error);
-                // });
+                axios.get(url2+groupIds)
+                .then((response) => {
+                  let data = response.data.data
+                  let colorIds = this.getFields(data, "id")
+                  console.log("COLOR IDs: ", colorIds)
+                  let url3 = API.baseURL + API.routes.sites + "/?colors__in="
+                  console.log("URL: ", url3)
+                  // Site query
+                  axios.get(url3+colorIds)
+                  .then((response) => {
+                    let data = response.data.data
+                    console.log(data)
+                    this.setState({
+                      data: data
+                    })
+                  }, (error) => {
+                    console.log(error);
+                  });
+                }, (error) => {
+                  console.log(error);
+                });
           // ==========================================
         }, (error) => {
           console.log(error);
@@ -115,6 +142,16 @@ class Search extends Component {
       }
      }
   }
+
+  getFields(input, field) {
+      let output = "";
+      for (let i=0; i < input.length ; ++i)
+          output += `${input[i][field]},`;
+      output = output.substring(0, output.length - 1)
+      return output;
+  }
+
+
   /**
    * Method called every time the search bar updates.
    * It sets the search mode so that the search
