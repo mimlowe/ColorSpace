@@ -78,7 +78,7 @@ class Search extends Component {
             let data = response.data.data
             console.log("DATA:", data)
 
-            if (data == []) {
+            if (data == [] || data == null || data[0] == undefined) {
               // ======================================
               //         SELENIUM POLLER
               // ======================================
