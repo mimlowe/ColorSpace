@@ -3,7 +3,8 @@ let API = {
   routes : {
       sites         : '/sites'     ,
       colors        : '/colors'    ,
-      colorgroups   : '/colorgroups'
+      colorgroups   : '/colorgroups',
+      newsites      : '/newsites'
   }
 }
 export default API;

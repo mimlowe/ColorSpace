@@ -76,22 +76,30 @@ class Search extends Component {
           axios.get(url+params)
           .then((response) => {
             let data = response.data.data
-            if (data == null || data == [] || data === undefined) {
+            console.log("DATA:", data)
+
+            if (data == []) {
               // ======================================
               //         SELENIUM POLLER
               // ======================================
-              /*
-
-                     Logic to trigger Poller goes
-
-                              H E R E
-
-              */
-              // ======================================
+              let url2 = API.baseURL + API.routes.newsites
+              let body = {"domain": query}
+              console.log("URL", url2)
+              console.log("BODY:",body)
+              axios.post(url2+"/", body)
+              .then(function (response) {
+                console.log(response);
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
             }
+
             this.setState({
               data: data
             })
+
+
           }, (error) => {
             console.log(error);
           });
@@ -226,14 +234,13 @@ class Search extends Component {
     console.log(sites)
     return (
       <div className="App">
-
           <h1>_ColorSpace</h1>
           <input
             type="text"
             className="search-bar"
             onKeyDown={this.keyPress}
             onChange={this.handleChange}
-            placeholder="#fafafa, amazon.com"
+            placeholder="#fafafa, amazon.com, light"
           />
           <div id="grad1"></div>
 
